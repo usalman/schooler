@@ -1,3 +1,4 @@
+import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
 import Image from 'next/image'
 
@@ -23,9 +24,8 @@ const TeacherList = () => {
         </div>
       </div>
       {/* LIST */}
-      <div className=""></div>
       {/* PAGINATION */}
-      <div className=""></div>
+      <Pagination />
     </div>
   )
 }
