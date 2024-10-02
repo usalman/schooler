@@ -4,17 +4,12 @@ export const columns = [
     accessor: 'info',
   },
   {
-    header: 'Teacher ID',
-    accessor: 'teacherId',
+    header: 'Student ID',
+    accessor: 'studentId',
     className: 'hidden md:table-cell',
   },
   {
-    header: 'Subjects',
-    accessor: 'subjects',
-    className: 'hidden md:table-cell',
-  },
-  {
-    header: 'Classes',
+    header: 'Grade',
     accessor: 'subjects',
     className: 'hidden md:table-cell',
   },

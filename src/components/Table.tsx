@@ -1,12 +1,10 @@
-import { Teacher } from '@/types/Teacher'
-
 const Table = ({
   columns,
   renderRow,
   data,
 }: {
   columns: { header: string; accessor: string; className?: string }[]
-  renderRow: (item: Teacher) => React.ReactNode
+  renderRow: (item: any) => React.ReactNode
   data: any[]
 }) => {
   return (
