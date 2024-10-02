@@ -1,7 +1,7 @@
 import Pagination from '@/components/Pagination'
 import Table from '@/components/Table'
 import TableSearch from '@/components/TableSearch'
-import { columns } from '@/shared/columns'
+import { columns } from '@/shared/TeacherListColumns'
 import { role, teachersData } from '@/shared/data'
 import { Teacher } from '@/types/Teacher'
 import Image from 'next/image'
