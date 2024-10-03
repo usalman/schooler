@@ -1,3 +1,5 @@
+import TeacherForm from './TeacherForm'
+
 const FormModalContent = ({
   table,
   type,
@@ -29,7 +31,7 @@ const FormModalContent = ({
       </button>
     </form>
   ) : (
-    'create or update'
+    <TeacherForm type="create" />
   )
 }
 
