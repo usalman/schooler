@@ -4,6 +4,7 @@ const FormModalContent = ({
   table,
   type,
   id,
+  data,
 }: {
   table:
     | 'teacher'
@@ -20,6 +21,7 @@ const FormModalContent = ({
     | 'announcement'
   type: 'create' | 'update' | 'delete'
   id?: number
+  data: any
 }) => {
   return type === 'delete' && id ? (
     <form action="" className="p-4 flex flex-col gap-4">
@@ -31,7 +33,7 @@ const FormModalContent = ({
       </button>
     </form>
   ) : (
-    <TeacherForm type="create" />
+    <TeacherForm type={type} data={data} />
   )
 }
 
