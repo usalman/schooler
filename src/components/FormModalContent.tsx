@@ -32,8 +32,10 @@ const FormModalContent = ({
         Delete
       </button>
     </form>
-  ) : (
+  ) : type === 'create' || type === 'update' ? (
     <TeacherForm type={type} data={data} />
+  ) : (
+    'Form not found!'
   )
 }
 
