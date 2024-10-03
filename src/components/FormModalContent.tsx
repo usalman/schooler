@@ -1,4 +1,4 @@
-import TeacherForm from './TeacherForm'
+import TeacherForm from './forms/TeacherForm'
 
 const FormModalContent = ({
   table,
