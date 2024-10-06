@@ -21,16 +21,16 @@ export const columns = [
   {
     header: 'Phone',
     accessor: 'subjects',
-    className: 'hidden lg:table-cell',
+    className: 'hidden md:table-cell',
   },
   {
     header: 'Address',
     accessor: 'address',
-    className: 'hidden lg:table-cell',
+    className: 'hidden md:table-cell',
   },
   {
     header: 'Actions',
     accessor: 'actions',
-    className: 'hidden lg:table-cell',
+    className: 'hidden md:table-cell',
   },
 ]

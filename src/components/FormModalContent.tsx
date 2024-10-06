@@ -20,7 +20,7 @@ const FormModalContent = ({
     | 'event'
     | 'announcement'
   type: 'create' | 'update' | 'delete'
-  id?: number
+  id?: string
   data: any
 }) => {
   return type === 'delete' && id ? (
