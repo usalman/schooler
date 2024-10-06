@@ -119,19 +119,19 @@ const SingleStudentPage = () => {
         <div className="bg-white p-4 rounded-md">
           <h1 className="text-xl font-semibold">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
-            <Link href="/" className="rounded-md bg-SkyLight">
+            <Link href="/" className="rounded-md bg-SkyLight p-2">
               Student&apos;s Lessons
             </Link>
-            <Link href="/" className="rounded-md bg-PurpleLight">
+            <Link href="/" className="rounded-md bg-PurpleLight p-2">
               Student&apos;s Teachers
             </Link>
-            <Link href="/" className="rounded-md bg-pink-50">
+            <Link href="/" className="rounded-md bg-pink-50 p-2">
               Student&apos;s Exams
             </Link>
-            <Link href="/" className="rounded-md bg-SkyLight">
+            <Link href="/" className="rounded-md bg-SkyLight p-2">
               Student&apos;s Assignments
             </Link>
-            <Link href="/" className="rounded-md bg-YellowLight">
+            <Link href="/" className="rounded-md bg-YellowLight p-2">
               Student&apos;s Results
             </Link>
           </div>
