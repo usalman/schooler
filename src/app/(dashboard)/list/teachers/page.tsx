@@ -60,15 +60,19 @@ const TeacherListPage = async ({
   searchParams: { [key: string]: string | undefined }
 }) => {
   const { page, ...queryParams } = searchParams
-  const p = page ? +page : 1
-  const data = await prisma.teacher.findMany({
-    include: {
-      subjects: true,
-      classes: true,
-    },
-    take: ITEMS_PER_PAGE,
-    skip: ITEMS_PER_PAGE * (p - 1),
-  })
+  const pageNumber = page ? +page : 1
+
+  const [data, count] = await prisma.$transaction([
+    prisma.teacher.findMany({
+      include: {
+        subjects: true,
+        classes: true,
+      },
+      take: ITEMS_PER_PAGE,
+      skip: ITEMS_PER_PAGE * (pageNumber - 1),
+    }),
+    prisma.teacher.count(),
+  ])
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -91,7 +95,7 @@ const TeacherListPage = async ({
       {/* LIST */}
       <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
-      <Pagination />
+      <Pagination page={pageNumber} count={count} />
     </div>
   )
 }
