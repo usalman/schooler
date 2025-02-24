@@ -2,7 +2,7 @@
 
 import { Calendar, momentLocalizer, View } from 'react-big-calendar'
 import moment from 'moment'
-import { calendarEvents } from '@/shared/data'
+import { calendarEvents } from '@/lib/data'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import { useState } from 'react'
 

@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import menuItems from '@/shared/menuItems'
-import { role } from '@/shared/data'
+import { role } from '@/lib/data'
 
 const Menu = () => {
   return (

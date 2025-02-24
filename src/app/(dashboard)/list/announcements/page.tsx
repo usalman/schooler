@@ -3,7 +3,7 @@ import Pagination from '@/components/Pagination'
 import Table from '@/components/Table'
 import TableSearch from '@/components/TableSearch'
 import { columns } from '@/shared/AnnouncementListColumns'
-import { role, announcementsData } from '@/shared/data'
+import { role, announcementsData } from '@/lib/data'
 import { Announcement } from '@/types/Announcement'
 import Image from 'next/image'
 

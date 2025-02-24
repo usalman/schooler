@@ -3,7 +3,7 @@ import Pagination from '@/components/Pagination'
 import Table from '@/components/Table'
 import TableSearch from '@/components/TableSearch'
 import { columns } from '@/shared/ParentListColumns'
-import { parentsData, role } from '@/shared/data'
+import { parentsData, role } from '@/lib/data'
 import { Parent } from '@/types/Parent'
 import Image from 'next/image'
 

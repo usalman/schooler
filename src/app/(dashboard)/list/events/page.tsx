@@ -3,7 +3,7 @@ import Pagination from '@/components/Pagination'
 import Table from '@/components/Table'
 import TableSearch from '@/components/TableSearch'
 import { columns } from '@/shared/EventListColumns'
-import { role, eventsData } from '@/shared/data'
+import { role, eventsData } from '@/lib/data'
 import { Event } from '@/types/Event'
 import Image from 'next/image'
 

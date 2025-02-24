@@ -3,7 +3,7 @@ import Pagination from '@/components/Pagination'
 import Table from '@/components/Table'
 import TableSearch from '@/components/TableSearch'
 import { columns } from '@/shared/AssignmentListColumns'
-import { role, assignmentsData } from '@/shared/data'
+import { role, assignmentsData } from '@/lib/data'
 import { Assignment } from '@/types/Assignment'
 import Image from 'next/image'
 
