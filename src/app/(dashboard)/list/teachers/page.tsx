@@ -6,7 +6,7 @@ import prisma from '@/lib/prisma'
 import { ITEMS_PER_PAGE } from '@/lib/settings'
 import { columns } from '@/shared/TeacherListColumns'
 import { role } from '@/lib/data'
-import { Class, Subject, Teacher } from '@prisma/client'
+import { Class, Prisma, Subject, Teacher } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -62,8 +62,28 @@ const TeacherListPage = async ({
   const { page, ...queryParams } = searchParams
   const pageNumber = page ? +page : 1
 
+  // URL PARAMS CONDITION
+
+  const query: Prisma.TeacherWhereInput = {}
+
+  if (queryParams) {
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (value !== undefined) {
+        switch (key) {
+          case 'classId':
+            query.lessons = {
+              some: {
+                classId: parseInt(value),
+              },
+            }
+        }
+      }
+    }
+  }
+
   const [data, count] = await prisma.$transaction([
     prisma.teacher.findMany({
+      where: query,
       include: {
         subjects: true,
         classes: true,
@@ -71,7 +91,7 @@ const TeacherListPage = async ({
       take: ITEMS_PER_PAGE,
       skip: ITEMS_PER_PAGE * (pageNumber - 1),
     }),
-    prisma.teacher.count(),
+    prisma.teacher.count({ where: query }),
   ])
 
   return (
