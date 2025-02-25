@@ -25,7 +25,7 @@ const FormModal = ({
     | 'announcement'
   type: 'create' | 'update' | 'delete'
   data?: any
-  id?: string
+  id?: number | string
 }) => {
   const [open, setOpen] = useState<boolean>(false)
 
