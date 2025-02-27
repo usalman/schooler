@@ -158,10 +158,16 @@ const SingleTeacherPage = () => {
             >
               Teacher&apos;s Lessons
             </Link>
-            <Link href="/" className="rounded-md bg-pink-50">
+            <Link
+              href={`/list/exams?teacherId=${'teacher12'}`}
+              className="rounded-md bg-pink-50"
+            >
               Teacher&apos;s Exams
             </Link>
-            <Link href="/" className="rounded-md bg-SkyLight">
+            <Link
+              href={`/list/assignments?teacherId=${'teacher12'}`}
+              className="rounded-md bg-SkyLight"
+            >
               Teacher&apos;s Assignments
             </Link>
           </div>
