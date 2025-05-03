@@ -3,11 +3,11 @@ import Pagination from '@/components/Pagination'
 import Table from '@/components/Table'
 import TableSearch from '@/components/TableSearch'
 import { columns } from '@/shared/ResultListColumns'
-import { role } from '@/lib/data'
 import Image from 'next/image'
 import prisma from '@/lib/prisma'
 import { ITEMS_PER_PAGE } from '@/lib/settings'
 import { Prisma } from '@prisma/client'
+import { getUserRole } from '@/lib/utils'
 
 type ResultList = {
   id: number
@@ -21,39 +21,21 @@ type ResultList = {
   startTime: Date
 }
 
-const renderRow = (item: ResultList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4">{item.title}</td>
-    <td>{item.studentName + ' ' + item.studentSurname}</td>
-    <td className="hidden md:table-cell">{item.score}</td>
-    <td className="hidden md:table-cell">
-      {item.teacherName + ' ' + item.teacherSurname}
-    </td>
-    <td className="hidden md:table-cell">{item.className}</td>
-    <td className="hidden md:table-cell">
-      {new Intl.DateTimeFormat('en-US').format(item.startTime)}
-    </td>
-    <td>
-      <div className="flex items-center gap-2">
-        {role === 'admin' && (
-          <>
-            <FormModal table="result" type="update" data={item} />
-            <FormModal table="result" type="delete" id={item.id} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-)
-
 const ResultListPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined }
 }) => {
+  const role = (await getUserRole()).role
+
+  // only admin and teacher should see the actions column
+  if (
+    !(role === 'admin' || role === 'teacher') &&
+    columns[columns.length - 1].header === 'Actions'
+  ) {
+    columns.length = columns.length - 1
+  }
+
   const { page, ...queryParams } = searchParams
   const pageNumber = page ? +page : 1
 
@@ -131,6 +113,34 @@ const ResultListPage = async ({
     }
   })
 
+  const renderRow = (item: ResultList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4">{item.title}</td>
+      <td>{item.studentName + ' ' + item.studentSurname}</td>
+      <td className="hidden md:table-cell">{item.score}</td>
+      <td className="hidden md:table-cell">
+        {item.teacherName + ' ' + item.teacherSurname}
+      </td>
+      <td className="hidden md:table-cell">{item.className}</td>
+      <td className="hidden md:table-cell">
+        {new Intl.DateTimeFormat('en-US').format(item.startTime)}
+      </td>
+      <td>
+        <div className="flex items-center gap-2">
+          {role === 'admin' && (
+            <>
+              <FormModal table="result" type="update" data={item} />
+              <FormModal table="result" type="delete" id={item.id} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  )
+
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
@@ -145,7 +155,9 @@ const ResultListPage = async ({
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === 'admin' && <FormModal table="result" type="create" />}
+            {(role === 'admin' || role === 'teacher') && (
+              <FormModal table="result" type="create" />
+            )}
           </div>
         </div>
       </div>
