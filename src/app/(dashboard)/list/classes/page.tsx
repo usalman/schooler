@@ -3,42 +3,27 @@ import Pagination from '@/components/Pagination'
 import Table from '@/components/Table'
 import TableSearch from '@/components/TableSearch'
 import { columns } from '@/shared/ClassListColumns'
-import { role } from '@/lib/data'
 import Image from 'next/image'
 import { Class, Grade, Prisma, Teacher } from '@prisma/client'
 import prisma from '@/lib/prisma'
 import { ITEMS_PER_PAGE } from '@/lib/settings'
+import { getUserRole } from '@/lib/utils'
 
 type ClassList = Class & { grade: Grade } & { supervisor: Teacher }
 
-const renderRow = (item: ClassList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4">{item.name}</td>
-    <td className="hidden md:table-cell">{item.capacity}</td>
-    <td className="hidden md:table-cell">{item.grade.level}</td>
-    <td className="hidden md:table-cell">
-      {item.supervisor?.name + ' ' + item.supervisor?.surname}
-    </td>
-    <td>
-      <div className="flex items-center gap-2">
-        {role === 'admin' && (
-          <>
-            <FormModal table="class" type="update" data={item} />
-            <FormModal table="class" type="delete" id={item.id} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-)
 const ClassListPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined }
 }) => {
+  const role = (await getUserRole()).role
+  // const currentUserId = (await getUserRole()).currentUserId
+
+  // only admin should see the actions column
+  if (!(role === 'admin') && columns[columns.length - 1].header === 'Actions') {
+    columns.length = columns.length - 1
+  }
+
   const { page, ...queryParams } = searchParams
   const pageNumber = page ? +page : 1
 
@@ -78,6 +63,30 @@ const ClassListPage = async ({
     }),
     prisma.class.count({ where: query }),
   ])
+
+  const renderRow = (item: ClassList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4">{item.name}</td>
+      <td className="hidden md:table-cell">{item.capacity}</td>
+      <td className="hidden md:table-cell">{item.grade.level}</td>
+      <td className="hidden md:table-cell">
+        {item.supervisor?.name + ' ' + item.supervisor?.surname}
+      </td>
+      <td>
+        <div className="flex items-center gap-2">
+          {role === 'admin' && (
+            <>
+              <FormModal table="class" type="update" data={item} />
+              <FormModal table="class" type="delete" id={item.id} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  )
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
