@@ -3,57 +3,27 @@ import Pagination from '@/components/Pagination'
 import Table from '@/components/Table'
 import TableSearch from '@/components/TableSearch'
 import { columns } from '@/shared/StudentListColumns'
-import { role } from '@/lib/data'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Class, Prisma, Student } from '@prisma/client'
 import prisma from '@/lib/prisma'
 import { ITEMS_PER_PAGE } from '@/lib/settings'
+import { getUserRole } from '@/lib/utils'
 
 type StudentList = Student & { class: Class }
-
-const renderRow = (item: StudentList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4">
-      <Image
-        src={item.img || '/noAvatar.png'}
-        alt=""
-        width={40}
-        height={40}
-        className="md:hidden xl:block w-10 h-10 rounded-full object-cover"
-      />
-      <div className="flex flex-col">
-        <h3 className="font-semibold">{item.name}</h3>
-        <p className="text-xs text-gray-500">{item?.class.name}</p>
-      </div>
-    </td>
-    <td className="hidden md:table-cell">{item.username}</td>
-    <td className="hidden md:table-cell">{item.class.name[0]}</td>
-    <td className="hidden md:table-cell">{item.phone}</td>
-    <td className="hidden md:table-cell">{item.address}</td>
-    <td>
-      <div className="flex items-center gap-2">
-        <Link href={`/list/students/${item.id}`}>
-          <button className="w-7 h-7 flex items-center justify-center rounded-full bg-Sky">
-            <Image src="/view.png" alt="" width={16} height={16} />
-          </button>
-        </Link>
-        {role === 'admin' && (
-          <FormModal table="student" type="delete" id={item.id} />
-        )}
-      </div>
-    </td>
-  </tr>
-)
 
 const StudentListPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined }
 }) => {
+  const role = (await getUserRole()).role
+
+  // only admin should see the actions column
+  if (!(role === 'admin') && columns[columns.length - 1].header === 'Actions') {
+    columns.length = columns.length - 1
+  }
+
   const { page, ...queryParams } = searchParams
   const pageNumber = page ? +page : 1
 
@@ -98,6 +68,43 @@ const StudentListPage = async ({
     }),
     prisma.student.count({ where: query }),
   ])
+
+  const renderRow = (item: StudentList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4">
+        <Image
+          src={item.img || '/noAvatar.png'}
+          alt=""
+          width={40}
+          height={40}
+          className="md:hidden xl:block w-10 h-10 rounded-full object-cover"
+        />
+        <div className="flex flex-col">
+          <h3 className="font-semibold">{item.name}</h3>
+          <p className="text-xs text-gray-500">{item?.class.name}</p>
+        </div>
+      </td>
+      <td className="hidden md:table-cell">{item.username}</td>
+      <td className="hidden md:table-cell">{item.class.name[0]}</td>
+      <td className="hidden md:table-cell">{item.phone}</td>
+      <td className="hidden md:table-cell">{item.address}</td>
+      <td>
+        <div className="flex items-center gap-2">
+          <Link href={`/list/students/${item.id}`}>
+            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-Sky">
+              <Image src="/view.png" alt="" width={16} height={16} />
+            </button>
+          </Link>
+          {role === 'admin' && (
+            <FormModal table="student" type="delete" id={item.id} />
+          )}
+        </div>
+      </td>
+    </tr>
+  )
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">

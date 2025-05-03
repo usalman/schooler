@@ -27,6 +27,7 @@ const ResultListPage = async ({
   searchParams: { [key: string]: string | undefined }
 }) => {
   const role = (await getUserRole()).role
+  const currentUserId = (await getUserRole()).currentUserId
 
   // only admin and teacher should see the actions column
   if (
@@ -61,6 +62,32 @@ const ResultListPage = async ({
         }
       }
     }
+  }
+
+  // ROLE CONDITION
+
+  switch (role) {
+    case 'admin':
+      break
+    case 'teacher':
+      query.OR = [
+        {
+          exam: { lesson: { teacherId: currentUserId! } },
+        },
+        {
+          assignment: { lesson: { teacherId: currentUserId! } },
+        },
+      ]
+      break
+    case 'student':
+      query.studentId = currentUserId!
+      break
+    case 'parent':
+      query.student = {
+        parentId: currentUserId!,
+      }
+    default:
+      break
   }
 
   const [dataRes, count] = await prisma.$transaction([
