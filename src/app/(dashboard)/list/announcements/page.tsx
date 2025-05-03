@@ -16,7 +16,7 @@ const AnnouncementListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined }
 }) => {
-  const role = await getUserRole()
+  const role = (await getUserRole()).role
 
   // only admin should see the actions column
   if (role !== 'admin' && columns[columns.length - 1].header === 'Actions') {

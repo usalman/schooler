@@ -22,10 +22,14 @@ const AssignmentListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined }
 }) => {
-  const role = await getUserRole()
+  const role = (await getUserRole()).role
+  const currentUserId = (await getUserRole()).currentUserId
 
-  // only admin should see the actions column
-  if (role !== 'admin' && columns[columns.length - 1].header === 'Actions') {
+  // only admin and teacher should see the actions column
+  if (
+    !(role === 'admin' || role === 'teacher') &&
+    columns[columns.length - 1].header === 'Actions'
+  ) {
     columns.length = columns.length - 1
   }
 
@@ -36,23 +40,23 @@ const AssignmentListPage = async ({
 
   const query: Prisma.AssignmentWhereInput = {}
 
+  query.lesson = {}
+
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
         switch (key) {
           case 'classId':
-            query.lesson = { classId: parseInt(value) }
+            query.lesson.classId = parseInt(value)
             break
           case 'teacherId':
-            query.lesson = { teacherId: value }
+            query.lesson.teacherId = value
             break
           case 'search':
-            query.lesson = {
-              subject: {
-                name: {
-                  contains: value,
-                  mode: 'insensitive',
-                },
+            query.lesson.subject = {
+              name: {
+                contains: value,
+                mode: 'insensitive',
               },
             }
             break
@@ -61,6 +65,36 @@ const AssignmentListPage = async ({
         }
       }
     }
+  }
+
+  // ROLE CONDITIONS
+
+  switch (role) {
+    case 'admin':
+      break
+    case 'teacher':
+      query.lesson.teacherId = currentUserId!
+      break
+    case 'student':
+      query.lesson.class = {
+        students: {
+          some: {
+            id: currentUserId!,
+          },
+        },
+      }
+      break
+    case 'parent':
+      query.lesson.class = {
+        students: {
+          some: {
+            parentId: currentUserId!,
+          },
+        },
+      }
+      break
+    default:
+      break
   }
 
   const [data, count] = await prisma.$transaction([
@@ -98,7 +132,7 @@ const AssignmentListPage = async ({
       </td>
       <td>
         <div className="flex items-center gap-2">
-          {(role === 'admin' || role === 'teacher') && (
+          {role === 'admin' && (
             <>
               <FormModal table="assignment" type="update" data={item} />
               <FormModal table="assignment" type="delete" id={item.id} />
