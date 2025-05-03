@@ -3,11 +3,11 @@ import Pagination from '@/components/Pagination'
 import Table from '@/components/Table'
 import TableSearch from '@/components/TableSearch'
 import { columns } from '@/shared/AssignmentListColumns'
-import { role } from '@/lib/data'
 import Image from 'next/image'
 import { Assignment, Class, Prisma, Subject, Teacher } from '@prisma/client'
 import { ITEMS_PER_PAGE } from '@/lib/settings'
 import prisma from '@/lib/prisma'
+import { getUserRole } from '@/lib/utils'
 
 type AssignmentList = Assignment & {
   lesson: {
@@ -17,37 +17,18 @@ type AssignmentList = Assignment & {
   }
 }
 
-const renderRow = (item: AssignmentList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4">{item.lesson.subject.name}</td>
-    <td>{item.lesson.class.name}</td>
-    <td className="hidden md:table-cell">
-      {item.lesson.teacher.name + ' ' + item.lesson.teacher.surname}
-    </td>
-    <td className="hidden md:table-cell">
-      {new Intl.DateTimeFormat('en-US').format(item.dueDate)}
-    </td>
-    <td>
-      <div className="flex items-center gap-2">
-        {role === 'admin' && (
-          <>
-            <FormModal table="assignment" type="update" data={item} />
-            <FormModal table="assignment" type="delete" id={item.id} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-)
-
 const AssignmentListPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined }
 }) => {
+  const role = await getUserRole()
+
+  // only admin should see the actions column
+  if (role !== 'admin' && columns[columns.length - 1].header === 'Actions') {
+    columns.length = columns.length - 1
+  }
+
   const { page, ...queryParams } = searchParams
   const pageNumber = page ? +page : 1
 
@@ -100,6 +81,34 @@ const AssignmentListPage = async ({
     prisma.assignment.count({ where: query }),
   ])
 
+  const renderRow = (item: AssignmentList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4">
+        {item.lesson.subject.name}
+      </td>
+      <td>{item.lesson.class.name}</td>
+      <td className="hidden md:table-cell">
+        {item.lesson.teacher.name + ' ' + item.lesson.teacher.surname}
+      </td>
+      <td className="hidden md:table-cell">
+        {new Intl.DateTimeFormat('en-US').format(item.dueDate)}
+      </td>
+      <td>
+        <div className="flex items-center gap-2">
+          {(role === 'admin' || role === 'teacher') && (
+            <>
+              <FormModal table="assignment" type="update" data={item} />
+              <FormModal table="assignment" type="delete" id={item.id} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  )
+
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
@@ -116,7 +125,9 @@ const AssignmentListPage = async ({
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === 'admin' && <FormModal table="assignment" type="create" />}
+            {(role === 'admin' || role === 'teacher') && (
+              <FormModal table="assignment" type="create" />
+            )}
           </div>
         </div>
       </div>
