@@ -1,9 +1,9 @@
 import Announcements from '@/components/Announcements'
-import AttendanceChart from '@/components/AttendanceChart'
 import EventCalendar from '@/components/EventCalendar'
 import FinanceChart from '@/components/FinanceChart'
-import CountChartContainer from '@/components/forms/CountChartContainer'
+import CountChartContainer from '@/components/CountChartContainer'
 import UserCard from '@/components/UserCard'
+import AttendanceChartContainer from '@/components/AttendanceChartContainer'
 
 const AdminPage = () => {
   return (
@@ -20,7 +20,7 @@ const AdminPage = () => {
             <CountChartContainer />
           </div>
           <div className="w-full lg:w-2/3 h-[450px]">
-            <AttendanceChart />
+            <AttendanceChartContainer />
           </div>
         </div>
         <div className="w-full h-[500px]">
