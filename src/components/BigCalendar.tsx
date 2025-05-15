@@ -14,6 +14,7 @@ const BigCalendar = ({
 }) => {
   const [view, setView] = useState<View>('work_week')
   const handleOnChangeView = (selectedView: View) => setView(selectedView)
+
   return (
     <Calendar
       localizer={localizer}
