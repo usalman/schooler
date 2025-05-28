@@ -18,7 +18,9 @@ const InputField = ({
   defaultValue,
   error,
   inputProps,
-}: InputFieldProps) => {
+}: any) => {
+  // TODO: this any shouldn't be here.
+  // But InputFieldProps gives error
   return (
     <div className="flex flex-col gap-2 w-full md:w-1/4">
       <label className="text-xs text-gray-500">{label}</label>

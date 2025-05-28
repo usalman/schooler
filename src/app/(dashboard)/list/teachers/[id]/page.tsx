@@ -1,5 +1,4 @@
 import Announcements from '@/components/Announcements'
-import BigCalendar from '@/components/BigCalendar'
 import FormContainer from '@/components/FormContainer'
 import Performance from '@/components/Performance'
 import prisma from '@/lib/prisma'
